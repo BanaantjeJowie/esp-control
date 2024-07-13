@@ -1,20 +1,15 @@
-function toggleRelay() {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'http://192.168.129.223/toggle', true);  // Replace <ESP32_IP_ADDRESS> with the actual IP address of your ESP32
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState == 4 && xhr.status == 200) {
-        var relayState = xhr.responseText;
-        document.getElementById('relayState').innerHTML = relayState;
-        var toggleButton = document.getElementById('toggleButton');
-        if (relayState === 'ON') {
-          toggleButton.innerHTML = 'Turn OFF';
-          toggleButton.className = 'btn btn-danger';
-        } else {
-          toggleButton.innerHTML = 'Turn ON';
-          toggleButton.className = 'btn btn-primary';
-        }
-      }
+const espIp = 'http://192.168.129.223'; // Replace with the IP address of your ESP
+
+async function toggleRelay(relayIndex) {
+    const statusElement = document.getElementById('status');
+    statusElement.textContent = 'Status: Toggling...';
+
+    try {
+        const response = await fetch(`${espIp}/toggle/${relayIndex}`);
+        const result = await response.text();
+        statusElement.textContent = `Status: Relay ${relayIndex} is ${result}`;
+    } catch (error) {
+        statusElement.textContent = 'Status: No response from esp';
+        console.error('Error:', error);
     }
-    xhr.send();
-  }
-  
+}

@@ -1,16 +1,10 @@
 #include <WiFi.h>
 #include <WebServer.h>
 #include <Wire.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
-
-#define SCREEN_WIDTH 128
-#define SCREEN_HEIGHT 32
-#define OLED_RESET -1
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 // Define the pin numbers
-const int relayPin = 2;    // GPIO 2 for the relay
+const int relayPins[] = {2, 4, 5, 16, 17, 18};    // GPIOs for the relays
+const int numRelays = sizeof(relayPins) / sizeof(relayPins[0]);
 
 // WiFi credentials
 const char* ssid = "TP-Link_FA02";
@@ -19,19 +13,19 @@ const char* password = "90428562";
 // Create a web server on port 80
 WebServer server(80);
 
-// Relay state
-bool relayState = false;
+// Relay states
+bool relayStates[numRelays] = {false};
 
 void setup() {
-  // Initialize the relay pin as an output
-  pinMode(relayPin, OUTPUT);
-  
-  // Start with the relay off
-  digitalWrite(relayPin, LOW);
-  
+  // Initialize the relay pins as outputs
+  for (int i = 0; i < numRelays; i++) {
+    pinMode(relayPins[i], OUTPUT);
+    digitalWrite(relayPins[i], LOW);
+  }
+
   // Initialize serial communication for debugging
   Serial.begin(115200);
-  
+
   // Connect to WiFi
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
@@ -42,24 +36,14 @@ void setup() {
   Serial.print("IP Address: ");
   Serial.println(WiFi.localIP());
 
-  // Define the route for toggling the relay
-  server.on("/toggle", handleToggle);
+  // Define the routes for toggling each relay
+  for (int i = 0; i < numRelays; i++) {
+    server.on(String("/toggle/") + i, [i]() { handleToggle(i); });
+  }
 
   // Start the server
   server.begin();
   Serial.println("Server started");
-
-  // Initialize OLED display
-  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3C for 128x32
-    Serial.println(F("SSD1306 allocation failed"));
-    for (;;);
-  }
-  display.clearDisplay();
-  display.setTextSize(1);
-  display.setTextColor(SSD1306_WHITE);
-  display.setCursor(0, 10);
-  display.print("Relay state: OFF");
-  display.display();
 }
 
 void loop() {
@@ -67,20 +51,15 @@ void loop() {
   server.handleClient();
 }
 
-void handleToggle() {
+void handleToggle(int relayIndex) {
   // Toggle the relay state
-  relayState = !relayState;
-  digitalWrite(relayPin, relayState ? HIGH : LOW);
-  Serial.print("Relay state: ");
-  Serial.println(relayState ? "ON" : "OFF");
-  
-  // Update OLED display
-  display.clearDisplay();
-  display.setCursor(0, 10);
-  display.print("Relay state: ");
-  display.print(relayState ? "ON" : "OFF");
-  display.display();
-  
+  relayStates[relayIndex] = !relayStates[relayIndex];
+  digitalWrite(relayPins[relayIndex], relayStates[relayIndex] ? HIGH : LOW);
+  Serial.print("Relay ");
+  Serial.print(relayIndex);
+  Serial.print(" state: ");
+  Serial.println(relayStates[relayIndex] ? "ON" : "OFF");
+
   // Send a response to the client
-  server.send(200, "text/plain", relayState ? "ON" : "OFF");
+  server.send(200, "text/plain", relayStates[relayIndex] ? "ON" : "OFF");
 }

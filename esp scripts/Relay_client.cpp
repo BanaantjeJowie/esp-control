@@ -102,7 +102,7 @@ void toggleRelay() {
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
     WiFiClient client;
-    String url = String("http://") + serverAddress + "/toggle";
+    String url = String("http://") + serverAddress + "/toggle/0";
     
     http.begin(client, url);  // Use the new API with WiFiClient
     
