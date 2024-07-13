@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 function toggleRelay() {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', 'http://192.168.129.223/toggle', true);
@@ -43,4 +44,20 @@ function toggleMode() {
     modeButton.innerHTML = 'Switch to Dark Mode';
     modeButton.className = 'btn btn-secondary mb-3';
   }
+=======
+const espIp = 'http://192.168.129.223'; // Replace with the IP address of your ESP
+
+async function toggleRelay(relayIndex) {
+    const statusElement = document.getElementById('status');
+    statusElement.textContent = 'Status: Toggling...';
+
+    try {
+        const response = await fetch(`${espIp}/toggle/${relayIndex}`);
+        const result = await response.text();
+        statusElement.textContent = `Status: Relay ${relayIndex} is ${result}`;
+    } catch (error) {
+        statusElement.textContent = 'Status: No response from esp';
+        console.error('Error:', error);
+    }
+>>>>>>> 3e1884a1ebdc07d941d0175c86dd16b3c4e82304
 }

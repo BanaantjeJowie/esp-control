@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* Custom styles for the Relay Control page */
 body.light-mode {
   background-color: #f8f9fa;
@@ -37,4 +38,17 @@ button.btn-danger {
 
 .animated-button:hover {
   transform: scale(1.1);
+=======
+body {
+  background-color: #f0f0f0;
+}
+
+h1 {
+  color: #333;
+  text-align: center;
+}
+
+.status-container {
+  text-align: center;
+>>>>>>> 3e1884a1ebdc07d941d0175c86dd16b3c4e82304
 }

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<<<<<<< HEAD
   <title>Relay Control</title>
   <!-- Bootstrap CSS -->
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
@@ -26,15 +27,44 @@
             <p class="card-text">Relay state: <span id="relayState">OFF</span></p>
             <button id="toggleButton" onclick="toggleRelay()" class="btn btn-primary animated-button">Turn ON</button>
           </div>
+=======
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ES32 Room Control</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="Style.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4">ESP32 Room Control</h1>
+        <div class="relay-container row mt-4">
+            <div class="col-md-4 mb-3">
+                <button class="btn btn-primary btn-lg btn-block" onclick="toggleRelay(0)">Toggle Lights</button>
+            </div>
+            <div class="col-md-4 mb-3">
+                <button class="btn btn-primary btn-lg btn-block" onclick="toggleRelay(1)">v</button>
+            </div>
+            <div class="col-md-4 mb-3">
+                <button class="btn btn-primary btn-lg btn-block" onclick="toggleRelay(2)">v</button>
+            </div>
+            <div class="col-md-4 mb-3">
+                <button class="btn btn-primary btn-lg btn-block" onclick="toggleRelay(3)">v</button>
+            </div>
+            <div class="col-md-4 mb-3">
+                <button class="btn btn-primary btn-lg btn-block" onclick="toggleRelay(4)">beep</button>
+            </div>
+            <div class="col-md-4 mb-3">
+                <button class="btn btn-primary btn-lg btn-block" onclick="toggleRelay(5)">Toggle Relay 5</button>
+            </div>
         </div>
-      </div>
+        <div class="status-container mt-4">
+            <p id="status" class="h5">Status: Ready</p>
+>>>>>>> 3e1884a1ebdc07d941d0175c86dd16b3c4e82304
+        </div>
     </div>
-  </div>
-  <!-- Bootstrap JS, Popper.js, and jQuery -->
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <!-- Custom JS -->
-  <script src="script.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="Script.js"></script>
 </body>
 </html>
