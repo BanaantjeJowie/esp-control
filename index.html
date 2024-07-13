@@ -4,18 +4,27 @@
   <title>Relay Control</title>
   <!-- Bootstrap CSS -->
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome for Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
   <!-- Custom CSS -->
   <link href="style.css" rel="stylesheet">
-</head>
-<body>
+  <!-- Favicon -->
+  <link rel="icon" href="https://favicon.io/emoji-favicons/light-bulb" type="image/x-icon">
+  <!--uiLang-->
+  <script src="http://uilang.com/lib/production/uilang.js"></script>
+  </head>
+<body class="light-mode">
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-md-6">
-        <h1 class="text-center mt-5">Lights</h1>
+        <h1 class="text-center mt-5">Relay Control</h1>
+        <div class="text-center">
+          <button id="modeButton" onclick="toggleMode()" class="btn btn-secondary mb-3">Switch to Dark Mode</button>
+        </div>
         <div class="card mt-3">
           <div class="card-body text-center">
-            <p class="card-text">Status: <span id="relayState">OFF</span></p>
-            <button id="toggleButton" onclick="toggleRelay()" class="btn btn-primary">Turn ON</button>
+            <p class="card-text">Relay state: <span id="relayState">OFF</span></p>
+            <button id="toggleButton" onclick="toggleRelay()" class="btn btn-primary animated-button">Turn ON</button>
           </div>
         </div>
       </div>
