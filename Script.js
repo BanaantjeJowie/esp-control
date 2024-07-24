@@ -13,5 +13,5 @@ async function toggleRelay(relayIndex) {
         statusElement.textContent = 'Status: No response from esp';
         console.error('Error:', error);
     }
->>>>>>> 3e1884a1ebdc07d941d0175c86dd16b3c4e82304
+
 }
