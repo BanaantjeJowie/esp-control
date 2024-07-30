@@ -13,6 +13,8 @@
 #define TFT_BL 4
 #define BUTTON_PIN 0          // Select button
 #define SCROLL_BUTTON_PIN 35  // Scroll button
+#define BATTERY_PIN 34        // Analog pin for battery voltage
+#define USB_DETECT_PIN 36     // GPIO pin for detecting USB power, adjust as needed
 
 // WiFi credentials
 const char* ssid = "TP-Link_FA02";
@@ -44,7 +46,15 @@ const char* options[] = {
 const int numOptions = sizeof(options) / sizeof(options[0]);
 int selectedOption = 0;
 int previousOption = -1;
+bool optionStates[numOptions] = {false};  // Track the state of each option
 const int charWidth = 6; // Approximate width of a character in pixels
+
+// Battery voltage parameters
+const float maxBatteryVoltage = 4.2;  // Maximum voltage when battery is fully charged
+const float minBatteryVoltage = 3.0;  // Minimum voltage considered empty
+const int analogMax = 4095;           // Maximum ADC value (12-bit ADC)
+const float referenceVoltage = 3.3;   // Reference voltage of ADC
+unsigned long lastBatteryCheck = 0;   // Timer for battery level check
 
 // ISR for button presses
 void IRAM_ATTR handleSelectButton() {
@@ -74,15 +84,22 @@ void IRAM_ATTR handleScrollButton() {
 // Function to display the current options
 void displayOptions() {
   tft.setTextSize(1);
-  tft.setTextColor(ST77XX_WHITE);
 
-  // Clear previous indicator
-  if (previousOption >= 0) {
-    int previousOptionWidth = strlen(options[previousOption]) * charWidth;
-    tft.fillRect(10 + previousOptionWidth + 5, 10 + 20 * previousOption, 10, 10, ST77XX_BLACK);
+  for (int i = 0; i < numOptions; i++) {
+    if (optionStates[i]) {
+      tft.setTextColor(ST77XX_GREEN);
+    } else {
+      tft.setTextColor(ST77XX_WHITE);
+    }
+
+    if (i == previousOption) {
+      tft.fillRect(10 + strlen(options[i]) * charWidth + 5, 10 + 20 * i, 10, 10, ST77XX_BLACK);
+    }
+
+    tft.setCursor(10, 10 + 20 * i);
+    tft.print(options[i]);
   }
 
-  // Draw new indicator
   int selectedOptionWidth = strlen(options[selectedOption]) * charWidth;
   tft.setTextColor(ST77XX_GREEN);
   tft.setCursor(10 + selectedOptionWidth + 5, 10 + 20 * selectedOption);
@@ -103,6 +120,14 @@ void sendAPIRequest(int option) {
       String response = http.getString();
       Serial.println(httpResponseCode);
       Serial.println(response);
+
+      if (response == "ON") {
+        optionStates[option] = true;
+      } else if (response == "OFF") {
+        optionStates[option] = false;
+      }
+
+      displayOptions();
     } else {
       Serial.print("Error on sending GET request: ");
       Serial.println(httpResponseCode);
@@ -110,6 +135,35 @@ void sendAPIRequest(int option) {
     http.end();
   } else {
     Serial.println("WiFi not connected");
+  }
+}
+
+// Function to measure battery voltage and display battery level
+void displayBatteryLevel() {
+  bool usbConnected = digitalRead(USB_DETECT_PIN) == HIGH;
+
+  if (usbConnected) {
+    tft.fillRect(0, tft.height() - 20, tft.width(), 20, ST77XX_BLACK);  // Clear previous display
+    tft.setCursor(10, tft.height() - 20);
+    tft.setTextColor(ST77XX_WHITE);
+    tft.print("USB Power Connected");
+  } else {
+    int analogValue = analogRead(BATTERY_PIN);
+    float voltage = analogValue * (referenceVoltage / analogMax) * 2;  // Voltage factor adjustment
+    float batteryPercentage = (voltage - minBatteryVoltage) / (maxBatteryVoltage - minBatteryVoltage) * 100;
+
+    if (batteryPercentage > 100) {
+      batteryPercentage = 100;
+    } else if (batteryPercentage < 0) {
+      batteryPercentage = 0;
+    }
+
+    tft.fillRect(0, tft.height() - 20, tft.width(), 20, ST77XX_BLACK);  // Clear previous display
+    tft.setCursor(10, tft.height() - 20);
+    tft.setTextColor(ST77XX_WHITE);
+    tft.print("Battery: ");
+    tft.print(batteryPercentage, 1);  // Display percentage with one decimal point
+    tft.print("%");
   }
 }
 
@@ -123,26 +177,18 @@ void setup(void) {
   tft.init(135, 240);
   tft.setRotation(2);
 
-  // Clear the screen
   tft.fillScreen(ST77XX_BLACK);
 
-  // Initial display of options
-  for (int i = 0; i < numOptions; i++) {
-    tft.setCursor(10, 10 + 20 * i);
-    tft.print(options[i]);
-  }
-
-  // Display initial selection
   displayOptions();
 
-  // Setup buttons
   pinMode(BUTTON_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), handleSelectButton, CHANGE);
 
   pinMode(SCROLL_BUTTON_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(SCROLL_BUTTON_PIN), handleScrollButton, CHANGE);
 
-  // Connect to WiFi
+  pinMode(USB_DETECT_PIN, INPUT);  // Set USB detection pin mode
+
   WiFi.begin(ssid, password);
   Serial.print("Connecting to WiFi...");
   while (WiFi.status() != WL_CONNECTED) {
@@ -162,5 +208,11 @@ void loop() {
   if (selectButtonPressed) {
     selectButtonPressed = false;
     sendAPIRequest(selectedOption);
+  }
+
+  unsigned long currentTime = millis();
+  if (currentTime - lastBatteryCheck > 5000) {  // Refresh battery status every 5 seconds
+    lastBatteryCheck = currentTime;
+    displayBatteryLevel();
   }
 }
