@@ -5,6 +5,7 @@
 
 // Define the pin numbers
 const int relayPins[] = {2, 4, 5, 16, 17, 18};    // GPIOs for the relays
+const int buttonPin = 15;                         // GPIO for the pushbutton
 const int numRelays = sizeof(relayPins) / sizeof(relayPins[0]);
 
 // WiFi credentials
@@ -24,6 +25,12 @@ bool relayStates[numRelays] = {false};
 
 // Preferences to store relay states
 Preferences preferences;
+
+// Debounce variables for pushbutton
+unsigned long lastDebounceTime = 0;
+unsigned long debounceDelay = 50;
+int lastButtonState = LOW;
+int buttonState = HIGH;  // Assume the button is not pressed
 
 // Function to handle toggle requests
 void handleToggle(int relayIndex) {
@@ -57,7 +64,6 @@ const char* htmlContent = R"rawliteral(
             margin: 0;
             background-size: cover;
             background-position: center;
-            /* Background image will be set by JavaScript */
         }
         .container {
             background-color: #ffffff;
@@ -195,6 +201,9 @@ const char* htmlContent = R"rawliteral(
             }
         }
 
+        // Refresh relay states every 10 seconds
+        setInterval(loadRelayStates, 10000);
+
         async function setBackgroundImage() {
             const apiKey = '644070'; // Replace with your Unsplash API key
             const url = `https://api.unsplash.com/photos/random?client_id=${apiKey}&query=nature&orientation=landscape`;
@@ -208,13 +217,12 @@ const char* htmlContent = R"rawliteral(
                 if (data.length === 0) {
                     throw new Error('No images found');
                 }
-                const imageUrl = data[0].urls.full; // Gets the URL of the full image
-                console.log('Background image URL:', imageUrl); // Debug log
+                const imageUrl = data[0].urls.full;
+                console.log('Background image URL:', imageUrl);
 
                 document.body.style.backgroundImage = `url('${imageUrl}')`;
             } catch (error) {
                 console.error('Error fetching background image:', error);
-                // Fallback background color in case of error
                 document.body.style.backgroundImage = 'none';
             }
         }
@@ -232,13 +240,15 @@ void setup() {
   // Initialize preferences
   preferences.begin("relayStates", false);
 
+  // Set up relays and load their states
   for (int i = 0; i < numRelays; i++) {
     pinMode(relayPins[i], OUTPUT);
-
-    // Load stored relay states
     relayStates[i] = preferences.getBool(String(i).c_str(), false);
     digitalWrite(relayPins[i], relayStates[i] ? HIGH : LOW);
   }
+
+  // Set up pushbutton
+  pinMode(buttonPin, INPUT_PULLUP);
 
   Serial.begin(115200);
 
@@ -279,4 +289,21 @@ void setup() {
 
 void loop() {
   server.handleClient();
+
+  // Read the pushbutton state
+  int reading = digitalRead(buttonPin);
+
+  // Check for button press and debounce
+  if (reading != lastButtonState) {
+    lastDebounceTime = millis();
+  }
+
+  if ((millis() - lastDebounceTime) > debounceDelay) {
+    if (reading == LOW && buttonState == HIGH) {
+      handleToggle(0);  // Toggle the first relay (lights)
+    }
+    buttonState = reading;
+  }
+
+  lastButtonState = reading;
 }
