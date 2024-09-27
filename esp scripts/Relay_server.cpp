@@ -264,7 +264,7 @@ void setup() {
   Serial.println(WiFi.localIP());
 
   server.on("/", []() {
-    server.send(200, "text/html", htmlContent);
+    server.send(200, "text/html", htmlContent); 
   });
 
   // Endpoint to return current relay states as JSON
