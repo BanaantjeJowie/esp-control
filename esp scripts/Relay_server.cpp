@@ -201,8 +201,6 @@ h1 {
             const relayStatusElement = document.getElementById('relayStatus' + relayIndex);
             const buttonElement = document.getElementById('btn' + relayIndex);
 
-            statusElement.textContent = 'Toggling Relay ' + (relayIndex + 1) + '...';
-
             try {
                 const response = await fetch(`/toggle/` + relayIndex);
                 const result = await response.text();
