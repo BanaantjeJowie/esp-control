@@ -327,10 +327,10 @@ void setup() {
     }
   });
 
-  // Set up toggle endpoints for relays
   for (int i = 0; i < numRelays; i++) {
-    server.on(String("/toggle/") + i, [i]() { handleToggle(i); });
-  }
+  int relayIndex = i;  // Capture i by value
+  server.on(String("/toggle/") + i, [relayIndex]() { handleToggle(relayIndex); });
+}
 
   server.begin();
   Serial.println("Server started");
