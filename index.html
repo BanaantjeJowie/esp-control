@@ -9,36 +9,45 @@
     <link rel="stylesheet" href="Style.css">
 </head>
 <body>
-    <div class="container">
-        <h1 class="mt-4">ESP32 Room Control</h1>
-        <div class="relay-container row mt-4">
-            <div class="col-md-4 mb-3">
-                <button class="btn btn-primary btn-lg btn-block" onclick="toggleRelay(0)">Toggle Lights</button>
-            </div>
-            <div class="col-md-4 mb-3">
-                <button class="btn btn-primary btn-lg btn-block" onclick="toggleRelay(1)">v</button>
-            </div>
-            <div class="col-md-4 mb-3">
-                <button class="btn btn-primary btn-lg btn-block" onclick="toggleRelay(2)">v</button>
-            </div>
-            <div class="col-md-4 mb-3">
-                <button class="btn btn-primary btn-lg btn-block" onclick="toggleRelay(3)">v</button>
-            </div>
-            <div class="col-md-4 mb-3">
-                <button class="btn btn-primary btn-lg btn-block" onclick="toggleRelay(4)">beep</button>
-            </div>
-            <div class="col-md-4 mb-3">
-                <button class="btn btn-primary btn-lg btn-block" onclick="toggleRelay(5)">x</button>
-            </div>
-        </div>
-        <div class="status-container mt-4">
-            <p id="status" class="h5">Status: Ready</p>
-
-        </div>
+    <div class="title">
+        <h3 class="h3">BanaantjeJowie's Room</h3>
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <div class="container">
+        <h3 style="text-align: left;">Lights</h3>
+        <div class="grid-container">
+            <div>
+                <button id="btn0" class="button" onclick="toggleRelay(0)">Main</button>
+                <p class="relay-status" id="relayStatus0">OFF</p>
+            </div>
+            <div>
+                <button id="btn1" class="button" onclick="toggleRelay(1)">Bed LED's</button>
+                <p class="relay-status" id="relayStatus1">OFF</p>
+            </div>
+            <div>
+                <button id="btn2" class="button" onclick="toggleRelay(2)">Unused</button>
+                <p class="relay-status" id="relayStatus2">OFF</p>
+            </div>
+            <div>
+                <button id="btn3" class="button" onclick="toggleRelay(3)">Unused</button>
+                <p class="relay-status" id="relayStatus3">OFF</p>
+            </div>
+            <div>
+                <button id="btn4" class="button" onclick="toggleRelay(4)">Beep</button>
+                <p class="relay-status" id="relayStatus4">OFF</p>
+            </div>
+            <div>
+                <button id="btn5" class="button" onclick="toggleRelay(5)">Unused</button>
+                <p class="relay-status" id="relayStatus5">OFF</p>
+            </div>
+        </div>
+        
+    </div>
+    <div class="container2">
+        <h3>Statistics</h3>
+        <div class="temperature" id="temperature">Temp: -- °C</div>
+    </div>
+    
+    <a href="http://192.168.129.251" class="link" target="_blank">Go to WLED Page</a>
     <script src="Script.js"></script>
 </body>
 </html>
