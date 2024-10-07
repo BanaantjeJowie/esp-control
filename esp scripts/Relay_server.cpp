@@ -61,7 +61,7 @@ const char* htmlContent = R"rawliteral(
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ESP32 Room Control</title>
     <style>
-        body {
+         body {
   font-family: Arial, sans-serif;
   background-color: #3a3a3a;
   display: flex;
@@ -158,7 +158,7 @@ h1 {
     </style>
 </head>
 <body>
-   <div class="title">
+    <div class="title">
         <h3 class="h3">BanaantjeJowie's Room</h3>
     </div>
     <div class="container">
@@ -195,83 +195,81 @@ h1 {
         <h3>Statistics</h3>
         <div class="temperature" id="temperature">Temp: -- °C</div>
     </div>
-    
-    <a href="http://192.168.129.251" class="link" target="_blank">Go to WLED Page</a>
     <script>
         async function toggleRelay(relayIndex) {
-    const statusElement = document.getElementById('status');
-    const relayStatusElement = document.getElementById('relayStatus' + relayIndex);
-    const buttonElement = document.getElementById('btn' + relayIndex);
+            const statusElement = document.getElementById('status');
+            const relayStatusElement = document.getElementById('relayStatus' + relayIndex);
+            const buttonElement = document.getElementById('btn' + relayIndex);
 
-    statusElement.textContent = 'Toggling Relay ' + (relayIndex + 1) + '...';
+            statusElement.textContent = 'Toggling Relay ' + (relayIndex + 1) + '...';
 
-    try {
-        const response = await fetch(`/toggle/` + relayIndex);
-        const result = await response.text();
-        statusElement.textContent = `Relay ${relayIndex + 1} is now ${result}`;
-        relayStatusElement.textContent = result;
+            try {
+                const response = await fetch(`/toggle/` + relayIndex);
+                const result = await response.text();
+                statusElement.textContent = `Relay ${relayIndex + 1} is now ${result}`;
+                relayStatusElement.textContent = result;
 
-        if (result === "ON") {
-            buttonElement.classList.add("on");
-        } else {
-            buttonElement.classList.remove("on");
-        }
-    } catch (error) {
-        statusElement.textContent = 'Failed to toggle relay.';
-        console.error('Error:', error);
-    }
-}
-
-async function loadRelayStates() {
-    try {
-        const response = await fetch('/states');
-        const states = await response.json();
-
-        states.forEach((state, index) => {
-            const relayStatusElement = document.getElementById('relayStatus' + index);
-            const buttonElement = document.getElementById('btn' + index);
-
-            relayStatusElement.textContent = state ? 'ON' : 'OFF';
-            if (state) {
-                buttonElement.classList.add('on');
-            } else {
-                buttonElement.classList.remove('on');
+                if (result === "ON") {
+                    buttonElement.classList.add("on");
+                } else {
+                    buttonElement.classList.remove("on");
+                }
+            } catch (error) {
+                statusElement.textContent = 'Failed to toggle relay.';
+                console.error('Error:', error);
             }
+        }
+
+        async function loadRelayStates() {
+            try {
+                const response = await fetch('/states');
+                const states = await response.json();
+
+                states.forEach((state, index) => {
+                    const relayStatusElement = document.getElementById('relayStatus' + index);
+                    const buttonElement = document.getElementById('btn' + index);
+
+                    relayStatusElement.textContent = state ? 'ON' : 'OFF';
+                    if (state) {
+                        buttonElement.classList.add('on');
+                    } else {
+                        buttonElement.classList.remove('on');
+                    }
+                });
+
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function loadTemperature() {
+            const temperatureElement = document.getElementById('temperature');
+
+            try {
+                const response = await fetch('/temperature');
+                const temperature = await response.json();
+                temperatureElement.textContent = `Temp: ${temperature} °C`;
+            } catch (error) {
+                console.error('Error fetching temperature:', error);
+                temperatureElement.textContent = 'Temp: -- °C';
+            }
+        }
+
+        // Refresh relay states every 1 second
+        setInterval(loadRelayStates, 1000);
+
+        // Refresh temperature every 30 seconds
+        setInterval(loadTemperature, 30000);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadRelayStates();
+            loadTemperature();
         });
-
-    } catch (error) {
-        console.error('Error:', error);
-    }
-}
-
-async function loadTemperature() {
-    const temperatureElement = document.getElementById('temperature');
-
-    try {
-        const response = await fetch('/temperature');
-        const temperature = await response.json();
-        temperatureElement.textContent = `Temp: ${temperature} °C`;
-    } catch (error) {
-        console.error('Error fetching temperature:', error);
-        temperatureElement.textContent = 'Temp: -- °C';
-    }
-}
-
-// Refresh relay states every 1 second
-setInterval(loadRelayStates, 1000);
-
-// Refresh temperature every 30 seconds
-setInterval(loadTemperature, 30000);
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    loadRelayStates();
-    loadTemperature();
-});
-</script>
+    </script>
 </body>
 </html>
 )rawliteral";
+
 
 void setup() {
   // Initialize preferences
