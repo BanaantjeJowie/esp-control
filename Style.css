@@ -4,12 +4,14 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column; /* Add this line to make flex children stack vertically */
+  flex-direction: column;
+  /* Add this line to make flex children stack vertically */
   height: 100vh;
   margin: 0;
   background-size: cover;
   background-position: center;
 }
+
 .title {
   background-color: #ffffff;
   padding: 10px;
@@ -20,10 +22,12 @@ body {
   position: relative;
   margin-bottom: 20px;
 }
+
 .h3 {
   color: #333;
   margin-top: 5px;
 }
+
 .container {
   background-color: #ffffff;
   padding: 20px;
@@ -33,6 +37,7 @@ body {
   text-align: center;
   position: relative;
 }
+
 .container2 {
   background-color: #ffffff;
   padding: 20px;
@@ -43,15 +48,18 @@ body {
   position: relative;
   margin-top: 50px;
 }
+
 h1 {
   color: #333;
   margin-bottom: 10px;
 }
+
 .grid-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
+
 .button {
   background-color: #888;
   color: white;
@@ -63,18 +71,22 @@ h1 {
   width: 100%;
   transition: background-color 0.3s, transform 0.3s;
 }
+
 .button.on {
   background-color: #007bff;
   transform: scale(1.05);
 }
+
 .button:hover {
   background-color: #555;
 }
+
 .relay-status {
   margin-top: 5px;
   font-size: 14px;
   color: #333;
 }
+
 .link {
   margin-top: 20px;
   display: block;
@@ -82,9 +94,11 @@ h1 {
   text-decoration: none;
   font-size: 16px;
 }
+
 .link:hover {
   text-decoration: underline;
 }
+
 .temperature {
   position: relative;
   top: 10px;
