@@ -5,19 +5,19 @@
 #include <DHT.h>
 
 // Define the pin numbers
-const int relayPins[] = {2, 4, 5, 16, 17, 18};    // GPIOs for the relays
-const int buttonPin = 15;                         // GPIO for the pushbutton
+const int relayPins[] = {2, 4, 5, 16, 17, 18}; // GPIOs for the relays
+const int buttonPin = 15;                      // GPIO for the pushbutton
 const int numRelays = sizeof(relayPins) / sizeof(relayPins[0]);
 
 // DHT11 Sensor Setup
-#define DHTPIN 19  // Define the pin where the DHT11 is connected
+#define DHTPIN 19 // Define the pin where the DHT11 is connected
 #define DHTTYPE DHT11
 DHT dht(DHTPIN, DHTTYPE);
 float temperature = 0.0;
 
 // WiFi credentials
-const char* ssid = "TP-Link_FA02";
-const char* password = "90428562";
+const char *ssid = "TP-Link_FA02";
+const char *password = "90428562";
 
 // Static IP address
 IPAddress localIP(192, 168, 129, 100);
@@ -37,10 +37,11 @@ Preferences preferences;
 unsigned long lastDebounceTime = 0;
 unsigned long debounceDelay = 50;
 int lastButtonState = LOW;
-int buttonState = HIGH;  // Assume the button is not pressed
+int buttonState = HIGH; // Assume the button is not pressed
 
 // Function to handle toggle requests
-void handleToggle(int relayIndex) {
+void handleToggle(int relayIndex)
+{
   relayStates[relayIndex] = !relayStates[relayIndex];
   digitalWrite(relayPins[relayIndex], relayStates[relayIndex] ? HIGH : LOW);
   preferences.putBool(String(relayIndex).c_str(), relayStates[relayIndex]);
@@ -53,7 +54,7 @@ void handleToggle(int relayIndex) {
 }
 
 // HTML, CSS, and JS content (with added temperature display)
-const char* htmlContent = R"rawliteral(
+const char *htmlContent = R"rawliteral(
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -268,8 +269,8 @@ h1 {
 </html>
 )rawliteral";
 
-
-void setup() {
+void setup()
+{
   // Initialize preferences
   preferences.begin("relayStates", false);
 
@@ -277,7 +278,8 @@ void setup() {
   dht.begin();
 
   // Set up relays and load their states
-  for (int i = 0; i < numRelays; i++) {
+  for (int i = 0; i < numRelays; i++)
+  {
     pinMode(relayPins[i], OUTPUT);
     relayStates[i] = preferences.getBool(String(i).c_str(), false);
     digitalWrite(relayPins[i], relayStates[i] ? HIGH : LOW);
@@ -291,7 +293,8 @@ void setup() {
   // Configure static IP
   WiFi.config(localIP, gateway, subnet);
   WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED)
+  {
     delay(1000);
     Serial.println("Connecting to WiFi...");
   }
@@ -299,22 +302,22 @@ void setup() {
   Serial.print("IP Address: ");
   Serial.println(WiFi.localIP());
 
-  server.on("/", []() {
-    server.send(200, "text/html", htmlContent); 
-  });
+  server.on("/", []()
+            { server.send(200, "text/html", htmlContent); });
 
   // Endpoint to return current relay states as JSON
-  server.on("/states", []() {
+  server.on("/states", []()
+            {
     String states = "[";
     for (int i = 0; i < numRelays; i++) {
       states += relayStates[i] ? "true" : "false";
       if (i < numRelays - 1) states += ",";
     }
     states += "]";
-    server.send(200, "application/json", states);
-  });
+    server.send(200, "application/json", states); });
 
   // Endpoint to return temperature as JSON
+<<<<<<< HEAD
   server.on("/temperature", []() {
     float humidity = dht.readHumidity();
     float temperature = dht.readTemperature();
@@ -334,25 +337,47 @@ void setup() {
   int relayIndex = i;  // Capture i by value
   server.on(String("/toggle/") + i, [relayIndex]() { handleToggle(relayIndex); });
 }
+=======
+  server.on("/temperature", []()
+            {
+    temperature = dht.readTemperature();
+    if (isnan(temperature)) {
+      Serial.println("Failed to read temperature from DHT sensor!");
+      server.send(200, "application/json", "null");
+    } else {
+      server.send(200, "application/json", String(temperature));
+    } });
+
+  for (int i = 0; i < numRelays; i++)
+  {
+    int relayIndex = i; // Capture i by value
+    server.on(String("/toggle/") + i, [relayIndex]()
+              { handleToggle(relayIndex); });
+  }
+>>>>>>> a86d8548f7d7296e1cff7af281b7696f5dc0c532
 
   server.begin();
   Serial.println("Server started");
 }
 
-void loop() {
+void loop()
+{
   server.handleClient();
 
   // Read the pushbutton state
   int reading = digitalRead(buttonPin);
 
   // Check for button press and debounce
-  if (reading != lastButtonState) {
+  if (reading != lastButtonState)
+  {
     lastDebounceTime = millis();
   }
 
-  if ((millis() - lastDebounceTime) > debounceDelay) {
-    if (reading == LOW && buttonState == HIGH) {
-      handleToggle(0);  // Toggle the first relay (lights)
+  if ((millis() - lastDebounceTime) > debounceDelay)
+  {
+    if (reading == LOW && buttonState == HIGH)
+    {
+      handleToggle(0); // Toggle the first relay (lights)
     }
     buttonState = reading;
   }
