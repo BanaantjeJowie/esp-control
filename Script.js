@@ -46,14 +46,17 @@ async function loadRelayStates() {
 
 async function loadTemperature() {
     const temperatureElement = document.getElementById('temperature');
+    const feelsLikeElement = document.getElementById('feelsLike');
 
     try {
         const response = await fetch('/temperature');
-        const temperature = await response.json();
-        temperatureElement.textContent = `Temp: ${temperature} °C`;
+        const { temperature, feelsLike } = await response.json();
+        temperatureElement.textContent = `🌡 ${temperature} °C`;
+        feelsLikeElement.textContent = `🌡 Heat Index ${feelsLike} °C`;
     } catch (error) {
         console.error('Error fetching temperature:', error);
-        temperatureElement.textContent = 'Temp: -- °C';
+        temperatureElement.textContent = '🌡 Error fetching temperature';
+        feelsLikeElement.textContent = '🌡 no data';
     }
 }
 

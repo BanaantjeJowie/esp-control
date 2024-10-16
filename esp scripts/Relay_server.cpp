@@ -316,14 +316,19 @@ void setup() {
 
   // Endpoint to return temperature as JSON
   server.on("/temperature", []() {
-    temperature = dht.readTemperature();
-    if (isnan(temperature)) {
-      Serial.println("Failed to read temperature from DHT sensor!");
-      server.send(200, "application/json", "null");
+    float humidity = dht.readHumidity();
+    float temperature = dht.readTemperature();
+    
+    if (isnan(temperature) || isnan(humidity)) {
+        Serial.println("Failed to read from DHT sensor!");
+        server.send(200, "application/json", "{\"temperature\":null,\"feelsLike\":null}");
     } else {
-      server.send(200, "application/json", String(temperature));
+        float feelsLike = dht.computeHeatIndex(temperature, humidity, false); // False for Celsius
+        String temperatureJson = "{\"temperature\":" + String(temperature) + ",\"feelsLike\":" + String(feelsLike) + "}";
+        server.send(200, "application/json", temperatureJson);
     }
   });
+
 
   for (int i = 0; i < numRelays; i++) {
   int relayIndex = i;  // Capture i by value

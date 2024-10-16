@@ -10,10 +10,10 @@
 </head>
 <body>
     <div class="title">
-        <h3 class="h3">BanaantjeJowie's Room</h3>
+        <h3>BanaantjeJowie's Room</h3>
     </div>
     <div class="container">
-        <h3 style="text-align: left;">Lights</h3>
+        <h3 class="h3" style="text-align: left;">Lights</h3>
         <div class="grid-container">
             <div>
                 <button id="btn0" class="button" onclick="toggleRelay(0)">Main</button>
@@ -43,11 +43,12 @@
         
     </div>
     <div class="container2">
-        <h3>Statistics</h3>
-        <div class="temperature" id="temperature">Temp: -- °C</div>
+        <div style="display:flex;justify-content: space-between;">
+            <h3 style="display:inline;">Statistics</h3> <h3 style="display:inline-block; text-align: right;" >cloudy</h3>
+        </div>
+        <div class="temperature" id="temperature">Temp: -- °C  </div>
+        <div class="temperature" id="feelsLike">Heat Index: -- °C</div>
     </div>
-    
-    <a href="http://192.168.129.251" class="link" target="_blank">Go to WLED Page</a>
     <script src="Script.js"></script>
 </body>
 </html>
