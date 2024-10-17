@@ -63,107 +63,122 @@ const char *htmlContent = R"rawliteral(
     <title>ESP32 Room Control</title>
     <style>
          body {
-  font-family: Arial, sans-serif;
-  background-color: #3a3a3a;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column; /* Add this line to make flex children stack vertically */
-  height: 100vh;
-  margin: 0;
-  background-size: cover;
-  background-position: center;
-}
-.title {
-  background-color: #ffffff;
-  padding: 10px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 350px;
-  text-align: center;
-  position: relative;
-  margin-bottom: 20px;
-}
-.h3 {
-  color: #333;
-  margin-top: 5px;
-}
-.container {
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 350px;
-  text-align: center;
-  position: relative;
-}
-.container2 {
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 350px;
-  text-align: left;
-  position: relative;
-  margin-top: 50px;
-}
-h1 {
-  color: #333;
-  margin-bottom: 10px;
-}
-.grid-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-.button {
-  background-color: #888;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 15px;
-  font-size: 16px;
-  cursor: pointer;
-  width: 100%;
-  transition: background-color 0.3s, transform 0.3s;
-}
-.button.on {
-  background-color: #007bff;
-  transform: scale(1.05);
-}
-.button:hover {
-  background-color: #555;
-}
-.relay-status {
-  margin-top: 5px;
-  font-size: 14px;
-  color: #333;
-}
-.link {
-  margin-top: 20px;
-  display: block;
-  color: #007bff;
-  text-decoration: none;
-  font-size: 16px;
-}
-.link:hover {
-  text-decoration: underline;
-}
-.temperature {
-  position: relative;
-  top: 10px;
-  font-size: 18px;
-  color: #333;
-  padding: 15px;
-}
+            font-family: Arial, sans-serif;
+            background-color: #3a3a3a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .title {
+            background-color: #ffffff;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+            position: relative;
+            margin-bottom: 20px;
+            margin-top: 100px;
+        }
+
+        .h3 {
+            color: #333;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            width: 45%;
+        }
+
+        .container, .container2 {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+            position: relative;
+        }
+
+        .container2 {
+            text-align: left;
+            margin-top: 50px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .button {
+            background-color: #888;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .button.on {
+            background-color: #007bff;
+            transform: scale(1.05);
+        }
+
+        .button:hover {
+            background-color: #555;
+        }
+
+        .relay-status {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .link {
+            margin-top: 20px;
+            display: block;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+
+        .temperature {
+            position: relative;
+            top: 10px;
+            font-size: 18px;
+            color: #333;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #f8f9fa;
+            margin-top: 10px;
+        }
+
     </style>
 </head>
 <body>
     <div class="title">
-        <h3 class="h3">BanaantjeJowie's Room</h3>
+        <h3>BanaantjeJowie's Room</h3>
     </div>
     <div class="container">
-        <h3 style="text-align: left;">Lights</h3>
+        <h3 class="h3" style="text-align: left;">Lights</h3>
         <div class="grid-container">
             <div>
                 <button id="btn0" class="button" onclick="toggleRelay(0)">Main</button>
@@ -190,24 +205,27 @@ h1 {
                 <p class="relay-status" id="relayStatus5">OFF</p>
             </div>
         </div>
-        
     </div>
+
     <div class="container2">
-        <h3>Statistics</h3>
-        <div class="temperature" id="temperature">Temp: -- °C</div>
+        <div style="display:flex;justify-content: space-between;">
+            <h3 style="display:inline;">Statistics</h3> 
+        </div>
+        <div class="temperature" id="temperature">Temp: -- °C  </div>
+        <div class="temperature" id="feelsLike">Heat Index: -- °C</div>
     </div>
     <script>
         async function toggleRelay(relayIndex) {
             const statusElement = document.getElementById('status');
             const relayStatusElement = document.getElementById('relayStatus' + relayIndex);
             const buttonElement = document.getElementById('btn' + relayIndex);
-
+        
             try {
                 const response = await fetch(`/toggle/` + relayIndex);
                 const result = await response.text();
                 statusElement.textContent = `Relay ${relayIndex + 1} is now ${result}`;
                 relayStatusElement.textContent = result;
-
+        
                 if (result === "ON") {
                     buttonElement.classList.add("on");
                 } else {
@@ -223,11 +241,11 @@ h1 {
             try {
                 const response = await fetch('/states');
                 const states = await response.json();
-
+        
                 states.forEach((state, index) => {
                     const relayStatusElement = document.getElementById('relayStatus' + index);
                     const buttonElement = document.getElementById('btn' + index);
-
+        
                     relayStatusElement.textContent = state ? 'ON' : 'OFF';
                     if (state) {
                         buttonElement.classList.add('on');
@@ -235,7 +253,7 @@ h1 {
                         buttonElement.classList.remove('on');
                     }
                 });
-
+        
             } catch (error) {
                 console.error('Error:', error);
             }
@@ -243,21 +261,21 @@ h1 {
 
         async function loadTemperature() {
             const temperatureElement = document.getElementById('temperature');
-
+            const feelsLikeElement = document.getElementById('feelsLike');
+        
             try {
                 const response = await fetch('/temperature');
-                const temperature = await response.json();
-                temperatureElement.textContent = `Temp: ${temperature} °C`;
+                const { temperature, feelsLike } = await response.json();
+                temperatureElement.textContent = `🌡 ${temperature} °C`;
+                feelsLikeElement.textContent = `🌡 Heat Index ${feelsLike} °C`;
             } catch (error) {
                 console.error('Error fetching temperature:', error);
-                temperatureElement.textContent = 'Temp: -- °C';
+                temperatureElement.textContent = '🌡 Error fetching temperature';
+                feelsLikeElement.textContent = '🌡 no data';
             }
         }
 
-        // Refresh relay states every 1 second
         setInterval(loadRelayStates, 1000);
-
-        // Refresh temperature every 30 seconds
         setInterval(loadTemperature, 30000);
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -267,6 +285,7 @@ h1 {
     </script>
 </body>
 </html>
+
 )rawliteral";
 
 void setup()
@@ -317,7 +336,6 @@ void setup()
     server.send(200, "application/json", states); });
 
   // Endpoint to return temperature as JSON
-<<<<<<< HEAD
   server.on("/temperature", []() {
     float humidity = dht.readHumidity();
     float temperature = dht.readTemperature();
@@ -337,25 +355,6 @@ void setup()
   int relayIndex = i;  // Capture i by value
   server.on(String("/toggle/") + i, [relayIndex]() { handleToggle(relayIndex); });
 }
-=======
-  server.on("/temperature", []()
-            {
-    temperature = dht.readTemperature();
-    if (isnan(temperature)) {
-      Serial.println("Failed to read temperature from DHT sensor!");
-      server.send(200, "application/json", "null");
-    } else {
-      server.send(200, "application/json", String(temperature));
-    } });
-
-  for (int i = 0; i < numRelays; i++)
-  {
-    int relayIndex = i; // Capture i by value
-    server.on(String("/toggle/") + i, [relayIndex]()
-              { handleToggle(relayIndex); });
-  }
->>>>>>> a86d8548f7d7296e1cff7af281b7696f5dc0c532
-
   server.begin();
   Serial.println("Server started");
 }

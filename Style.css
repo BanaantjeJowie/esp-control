@@ -5,7 +5,6 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  /* Add this line to make flex children stack vertically */
   height: 100vh;
   margin: 0;
   background-size: cover;
@@ -14,7 +13,7 @@ body {
 
 .title {
   background-color: #ffffff;
-  padding: 10px;
+  padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 350px;
@@ -26,7 +25,6 @@ body {
 
 .h3 {
   color: #333;
-  margin-top: 5px;
   margin-bottom: 5px;
   width: 45%;
 }
@@ -109,11 +107,7 @@ h1 {
   font-size: 18px;
   color: #333;
   padding: 15px;
-<<<<<<< HEAD
   border-radius: 10px;
   background-color: #f8f9fa;
   margin-top: 10px;
 }
-=======
-}
->>>>>>> a86d8548f7d7296e1cff7af281b7696f5dc0c532
